@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::Geolocation, type: :model do
   let(:geolocation_attributes) { attributes_for :api_v1_geolocations }
-  
+
   context 'when ipv4' do
     let(:subject) { described_class.new(geolocation_attributes) }
 

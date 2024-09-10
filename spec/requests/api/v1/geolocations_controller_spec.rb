@@ -14,17 +14,17 @@ RSpec.describe "/api/v1/geolocations", type: :request do
     end
 
     context 'based on url' do
-      let(:request_params) { {id: 'url', url: geolocation_record.url} }
+      let(:request_params) { { id: 'url', url: geolocation_record.url } }
       it_behaves_like 'success response'
     end
 
     context 'based on ip_address' do
-      let(:request_params) { {id: 'ip_address', ip_address: geolocation_record.ip_address} }
+      let(:request_params) { { id: 'ip_address', ip_address: geolocation_record.ip_address } }
       it_behaves_like 'success response'
     end
 
     context 'based on id' do
-      let(:request_params) { {id: geolocation_record.id} }
+      let(:request_params) { { id: geolocation_record.id } }
       it_behaves_like 'success response'
     end
   end
@@ -42,14 +42,14 @@ RSpec.describe "/api/v1/geolocations", type: :request do
         "radius"=>nil,
         "latitude"=>49.27527618408203,
         "location"=>
-        {"is_eu"=>false,
+        { "is_eu"=>false,
           "capital"=>"Ottawa",
-          "languages"=>[{"code"=>"en", "name"=>"English", "native"=>"English"}, {"code"=>"fr", "name"=>"French", "native"=>"Français"}],
+          "languages"=>[ { "code"=>"en", "name"=>"English", "native"=>"English" }, { "code"=>"fr", "name"=>"French", "native"=>"Français" } ],
           "geoname_id"=>6178582,
           "calling_code"=>"1",
           "country_flag"=>"https://assets.ipstack.com/flags/ca.svg",
           "country_flag_emoji"=>"🇨🇦",
-          "country_flag_emoji_unicode"=>"U+1F1E8 U+1F1E6"},
+          "country_flag_emoji_unicode"=>"U+1F1E8 U+1F1E6" },
         "longitude"=>-123.13249969482422,
         "region_code"=>"BC",
         "region_name"=>"British Columbia",
@@ -64,7 +64,7 @@ RSpec.describe "/api/v1/geolocations", type: :request do
 
     shared_context 'creates new record' do
       it 'should create a new record' do
-        expect { subject }.to change {Api::V1::Geolocation.count}.by(1)
+        expect { subject }.to change { Api::V1::Geolocation.count }.by(1)
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe "/api/v1/geolocations", type: :request do
 
     context 'based on url' do
       let(:url) { Faker::Internet.url }
-      let(:request_params) { {url:} }
+      let(:request_params) { { url: } }
       let(:client_service_url) { "https://api.ipstack.com/#{URI.parse(url).hostname}?access_key=#{ENV['IPSTACK_API_KEY']}" }
 
       before do
@@ -94,7 +94,7 @@ RSpec.describe "/api/v1/geolocations", type: :request do
 
     context 'based on ip_address' do
       let(:ip_address) { Faker::Internet.ip_v4_address }
-      let(:request_params) { {ip_address:} }
+      let(:request_params) { { ip_address: } }
       let(:client_service_url) { "https://api.ipstack.com/#{ip_address}?access_key=#{ENV['IPSTACK_API_KEY']}" }
 
       before do
@@ -132,13 +132,13 @@ RSpec.describe "/api/v1/geolocations", type: :request do
       it_behaves_like 'should delete a record'
       it_behaves_like 'should return expected response'
     end
-    
+
     context 'based on url' do
       let(:request_params) { { id: 'url', url: geolocation_record.url } }
       it_behaves_like 'should delete a record'
       it_behaves_like 'should return expected response'
     end
-    
+
     context 'based on id' do
       let(:request_params) { { id: geolocation_record.id } }
       it_behaves_like 'should delete a record'

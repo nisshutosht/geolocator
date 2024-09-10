@@ -31,7 +31,7 @@ class GeolocationService
       @geolocation_record.service_response = client_object.service_response
       @geolocation_record.save
     else
-      @geolocation_record.errors.add('Api Response', client_error_message)
+      @geolocation_record.errors.add("Api Response", client_error_message)
     end
 
     @geolocation_record
@@ -63,7 +63,7 @@ class GeolocationService
   def set_geolocation_record
     geolocation_record_params = {}
     geolocation_record_params[:url] = user_input if get_input_type == TYPE_URL
-    geolocation_record_params[:ip_address] = user_input if [TYPE_IPV6, TYPE_IPV4].include?(user_input)
+    geolocation_record_params[:ip_address] = user_input if [ TYPE_IPV6, TYPE_IPV4 ].include?(user_input)
 
     Api::V1::Geolocation.new(geolocation_record_params)
   end
@@ -74,6 +74,6 @@ class GeolocationService
     return TYPE_URL if url?(user_input)
 
     # TODO: Should be via Internationalization/I18n
-    raise InvalidInputType.new('The input type needs to be IPv4 or IPv6 or a valid URL')
+    raise InvalidInputType.new("The input type needs to be IPv4 or IPv6 or a valid URL")
   end
 end

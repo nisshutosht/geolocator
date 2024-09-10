@@ -20,7 +20,7 @@ class Api::V1::GeolocationsController < ApplicationController
       render json: geolocation_record.errors, status: :unprocessable_entity
     end
   rescue GeolocationService::InvalidInputType => e
-    render json: {error_message: e.message}, status: :unprocessable_entity
+    render json: { error_message: e.message }, status: :unprocessable_entity
   end
 
   # DELETE /api/v1/geolocations/1

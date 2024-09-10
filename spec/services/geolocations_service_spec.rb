@@ -8,7 +8,7 @@ RSpec.describe GeolocationService do
 
     shared_context 'raises InvalidInputType' do
       it 'should raise error' do
-        expect{
+        expect {
           subject
         }.to raise_error(
           described_class::InvalidInputType, 'The input type needs to be IPv4 or IPv6 or a valid URL'
@@ -18,13 +18,13 @@ RSpec.describe GeolocationService do
 
     shared_context 'does not raise error' do
       it 'should not raise an error' do
-        expect{ subject }.not_to raise_error
+        expect { subject }.not_to raise_error
       end
     end
 
     context 'input_type url' do
       context 'when user_input is an invalid URL' do
-        let(:service_params) { {user_input: 'invalid-ip-address'} }
+        let(:service_params) { { user_input: 'invalid-ip-address' } }
 
         it_behaves_like 'raises InvalidInputType'
       end
@@ -33,7 +33,7 @@ RSpec.describe GeolocationService do
         let(:service_params) { { user_input: Faker::Internet.url } }
 
         it_behaves_like 'does not raise error'
-        
+
         it 'should set input_type to url' do
           expect(subject.input_type).to eq(described_class::TYPE_URL)
         end
@@ -45,7 +45,7 @@ RSpec.describe GeolocationService do
         let(:service_params) { { user_input: 'invalid-ip-address' } }
         it_behaves_like 'raises InvalidInputType'
       end
-      
+
       context 'when user_input is a valid ipv6' do
         let(:service_params) { { user_input: Faker::Internet.ip_v6_address } }
 
@@ -61,7 +61,7 @@ RSpec.describe GeolocationService do
 
         it_behaves_like 'raises InvalidInputType'
       end
-  
+
       context 'when user_input is a valid ipv4' do
         let(:service_params) { { user_input: Faker::Internet.ip_v4_address } }
 
@@ -76,15 +76,48 @@ RSpec.describe GeolocationService do
 
   describe '.save' do
     let(:geolocation_params) { attributes_for :api_v1_geolocations }
-    let(:subject) { described_class.new(user_input: Faker::Internet.ip_v4_address).save }
+    let(:ip_address) { Faker::Internet.ip_v4_address }
+    let(:subject) { described_class.new(user_input: ip_address).save }
 
     context 'when client response is success' do
+      let(:client_service_response_hash) do
+        {
+          "ip"=>ip_address,
+          "dma"=>nil,
+          "msa"=>nil,
+          "zip"=>"V5Y 0G6",
+          "city"=>"West End",
+          "type"=>"ipv6",
+          "radius"=>nil,
+          "latitude"=>49.27527618408203,
+          "location"=>
+          { "is_eu"=>false,
+            "capital"=>"Ottawa",
+            "languages"=>[ { "code"=>"en", "name"=>"English", "native"=>"English" }, { "code"=>"fr", "name"=>"French", "native"=>"Français" } ],
+            "geoname_id"=>6178582,
+            "calling_code"=>"1",
+            "country_flag"=>"https://assets.ipstack.com/flags/ca.svg",
+            "country_flag_emoji"=>"🇨🇦",
+            "country_flag_emoji_unicode"=>"U+1F1E8 U+1F1E6" },
+          "longitude"=>-123.13249969482422,
+          "region_code"=>"BC",
+          "region_name"=>"British Columbia",
+          "country_code"=>"CA",
+          "country_name"=>"Canada",
+          "continent_code"=>"NA",
+          "continent_name"=>"North America",
+          "connection_type"=>nil,
+          "ip_routing_type"=>nil
+        }
+      end
+      let(:client_service_url) { "https://api.ipstack.com/#{ip_address}?access_key=#{ENV['IPSTACK_API_KEY']}" }
+  
       before do
-        allow_any_instance_of(
-          Ipstack::Client
-        ).to receive(
-          :get_json_response
-        ).and_return(geolocation_params)
+        stub_request(
+          :any, client_service_url
+        ).to_return_json(
+          body: client_service_response_hash
+        )
       end
 
       it 'should save geolocation record' do

@@ -8,6 +8,6 @@ FactoryBot.define do
     longitude { Faker::Address.postcode }
     province { Faker::Address.state }
     url { Faker::Internet.url }
-    service_response { {a: :a, b: {b: :b}} }
+    service_response { { a: :a, b: { b: :b } } }
   end
 end
